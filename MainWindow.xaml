@@ -1,0 +1,87 @@
+﻿<Window x:Class="MoonPlayer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:MoonPlayer"
+        xmlns:converters="clr-namespace:MoonPlayer.Converters"
+
+        Title="MoonPlayer" Height="800" Width="700"
+        Icon="D:\Politech\4 sem\Курсова ПП\MoonPlayer\logo.ico">
+
+    <Window.Resources>
+        <converters:DurationToMinutesConverter x:Key="DurationToMinutesConverter"/>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="10,0,10,0" Height="30">
+            <TextBlock Text="Пошук: " VerticalAlignment="Center"/>
+
+            <TextBox Name="searchTextBox" Width="200" Margin="0,0,10,0" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Center"/>
+
+            <TextBlock Text="Сортувати за: " VerticalAlignment="Center"/>
+            <ComboBox x:Name="sortComboBox" SelectionChanged="SortComboBox_SelectionChanged" Width="330" VerticalAlignment="Center">
+                <ComboBoxItem Content="Сортувати за назвою (зростанням)" Tag="NameAscending"/>
+                <ComboBoxItem Content="Сортувати за назвою (спаданням)" Tag="NameDescending"/>
+                <ComboBoxItem Content="Сортувати за роком (зростанням)" Tag="YearAscending"/>
+                <ComboBoxItem Content="Сортувати за роком (спаданням)" Tag="YearDescending"/>
+                <ComboBoxItem Content="Сортувати за тривалістю (зростанням)" Tag="DurationAscending"/>
+                <ComboBoxItem Content="Сортувати за тривалістю (спаданням)" Tag="DurationDescending"/>
+            </ComboBox>
+        </StackPanel>
+
+        <ListBox Name="songsListBox" SelectionChanged="SongsListBox_SelectionChanged" Height="300">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="5" Visibility="{Binding DataContext.IsSelectMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                        <TextBlock Text="{Binding FileName}" FontWeight="Bold" Grid.Column="1" Margin="5" TextAlignment="Left"/>
+                        <TextBlock Text="{Binding FileAuthor}" FontStyle="Italic" Grid.Column="2" Margin="5" TextAlignment="Left"/>
+                        <TextBlock Text="{Binding FileDuration, Converter={StaticResource DurationToMinutesConverter}}" Grid.Column="3" Margin="5" TextAlignment="Left"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <StackPanel Orientation="Vertical" Margin="0, 0, 0, 30">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0, 20, 0, 5">
+                <Button Name="previousButton" Click="PreviousButton_Click" Width="100" Height="25" FontWeight="Bold">Prev</Button>
+                <Button Name="togglePlayStopButton" Click="TogglePlayStop_Click" Width="100" Margin="15,0,15,0" FontWeight="Bold">Play</Button>
+                <Button Name="nextButton" Click="NextButton_Click" Width="100" FontWeight="Bold">Next</Button>
+            </StackPanel>
+            <Slider Name="progressSlider" TickFrequency="1" Maximum="100" IsMoveToPointEnabled="True" ValueChanged="progressSlider_ValueChanged" Margin="10,0,10,0"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Margin="20, 0, 20, 10">
+            <TextBlock Text="Ваші плейлисти:" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+
+            <Button Content="Показати всі пісні" Click="ShowAllSongs_Click" Width="110" Margin="10,0,10,0"/>
+            <Button Name="createPlaylistButton" Click="CreatePlaylistButton_Click" Width="110" Margin="10,0,10,0">Створити плейлист</Button>
+            <Button Name="savePlaylistButton" Click="SavePlaylistButton_Click" Visibility="Collapsed" Width="110" Margin="10,0,10,0">Зберегти плейлист</Button>
+            <Button Name="deletePlaylistButton" Click="DeletePlaylistButton_Click" Width="110" Margin="10,0,10,0">Видалити плейлист</Button>
+
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="10, 0, 20, 10">
+            <Button Name="createPlaylistByDurationButton" Click="CreatePlaylistByDurationButton_Click" Width="209" Margin="10,0,10,0">Створити плейлист за тривалістю</Button>
+            <Button Name="addSongButton" Click="AddSongButton_Click" Width="110" Margin="10,0,10,0">Додати пісню</Button>
+            <Button Name="deleteSongButton" Click="DeleteSongButton_Click" Width="110" Margin="10,0,10,0">Видалити пісню</Button>
+
+        </StackPanel>
+        <ListBox Name="playlistsListBox" SelectionChanged="PlaylistsListBox_SelectionChanged" Height="240">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="5" TextAlignment="Left"/>
+                        <TextBlock Text="{Binding TotalDuration}" Margin="5" TextAlignment="Left"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </StackPanel>
+</Window>
